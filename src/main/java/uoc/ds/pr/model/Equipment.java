@@ -1,2 +1,4 @@
-package uoc.ds.pr.model;public class Equipment {
+package uoc.ds.pr.model;
+
+public class Equipment {
 }

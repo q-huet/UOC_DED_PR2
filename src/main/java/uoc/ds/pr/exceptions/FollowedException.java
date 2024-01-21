@@ -1,2 +1,4 @@
-package uoc.ds.pr.exceptions;public class FollowedException {
+package uoc.ds.pr.exceptions;
+
+public class FollowedException extends DSException{
 }

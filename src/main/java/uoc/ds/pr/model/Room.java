@@ -1,2 +1,4 @@
-package uoc.ds.pr.model;public class Room {
+package uoc.ds.pr.model;
+
+public class Room {
 }

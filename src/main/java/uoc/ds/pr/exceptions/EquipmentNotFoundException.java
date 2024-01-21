@@ -1,2 +1,4 @@
-package uoc.ds.pr.exceptions;public class EquipmentNotFoundException {
+package uoc.ds.pr.exceptions;
+
+public class EquipmentNotFoundException extends DSException{
 }

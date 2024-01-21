@@ -1,2 +1,4 @@
-package uoc.ds.pr.model;public class Employee {
+package uoc.ds.pr.model;
+
+public class Employee {
 }
