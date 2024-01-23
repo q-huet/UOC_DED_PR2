@@ -67,7 +67,7 @@ public class Role {
             final Position<Employee> employeePosition = (Position<Employee>) it.next();
             //final Posicion<Worker> workerPosition = it.siguiente();
             Employee e2 = employeePosition.getElem();
-            if (e2.getDNI().equals(e1.getDNI())) {
+            if (e2.getEmployeeId().equals(e1.getEmployeeId())) {
                 RoleEmployees.delete(employeePosition);
             }
         }

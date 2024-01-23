@@ -46,7 +46,7 @@ public class Employee {
         this.setRole(role);
     }
 
-    public String getDNI() {
+    public String getEmployeeId() {
         return DNI;
     }
 
@@ -98,7 +98,7 @@ public class Employee {
         for (Iterator<Room> it = getRooms(); it.hasNext(); ) {
             final Position<Room> roomPosition = (Position<Room>) it.next();
             Room r2 = roomPosition.getElem();
-            if (r2.getId().equals(r1.getId())) {
+            if (r2.getRoomId().equals(r1.getRoomId())) {
                 rooms.delete(roomPosition);
             }
         }

@@ -24,7 +24,7 @@ public class Room {
     List<Equipment> equipment;
 
     public Room(String id, String name, String description, CTTCompaniesJobsPR2.RoomType type) {
-        this.setId(id);
+        this.setRoomId(id);
         this.setName(name);
         this.setDescription(description);
         this.setType(type);
@@ -38,11 +38,11 @@ public class Room {
         this.setType(type);
     }
 
-    public String getId() {
+    public String getRoomId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setRoomId(String id) {
         this.id = id;
     }
 
@@ -70,6 +70,10 @@ public class Room {
         this.type = type;
     }
 
+    public int numEquipments(){
+        return this.equipment.size();
+    }
+
     public Iterator<Employee> getEmployees() {
         return this.employees.values();
     }
@@ -82,7 +86,7 @@ public class Room {
         for (Iterator<Employee> it = getEmployees(); it.hasNext(); ) {
             final Position<Employee> employeePosition = (Position<Employee>) it.next();
             Employee e2 = employeePosition.getElem();
-            if (e2.getDNI().equals(e1.getDNI())) {
+            if (e2.getEmployeeId().equals(e1.getEmployeeId())) {
                 employees.delete(employeePosition);
             }
         }

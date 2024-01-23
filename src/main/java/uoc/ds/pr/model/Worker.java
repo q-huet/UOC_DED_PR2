@@ -5,6 +5,7 @@ import edu.uoc.ds.adt.sequential.List;
 import edu.uoc.ds.traversal.Iterator;
 import uoc.ds.pr.CTTCompaniesJobs;
 import uoc.ds.pr.CTTCompaniesJobsPR2;
+import uoc.ds.pr.util.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -92,7 +93,7 @@ public class Worker implements Comparable<Worker> {
 
     public CTTCompaniesJobsPR2.Level getLevel() {
 
-        if (workedHours < 10)
+/*        if (workedHours < 10)
             this.level = CTTCompaniesJobsPR2.Level.BEFINNER;
         if (workedHours >= 10 && workedHours < 200)
             this.level = CTTCompaniesJobsPR2.Level.INTERN;
@@ -102,8 +103,8 @@ public class Worker implements Comparable<Worker> {
             this.level = CTTCompaniesJobsPR2.Level.SENIOR;
         if (workedHours >= 1000)
             this.level = CTTCompaniesJobsPR2.Level.EXPERT;
-
-        return this.level;
+*/
+        return LevelHelper.getLevel(this.workedHours);
     }
 
     public Iterator<JobOffer> getJobOffers() {

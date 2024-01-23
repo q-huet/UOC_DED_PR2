@@ -12,17 +12,17 @@ public class Equipment {
 
     private Room room;
 
-    public Equipment(String id, String name, String description, Room room) {
+    public Equipment(String id, String name, String description) {
         this.setId(id);
         this.setName(name);
         this.setDescription(description);
-        this.setRoom(room);
+       // this.setRoom(room);
     }
 
     public void update(String name, String description, Room room) {
         this.setName(name);
         this.setDescription(description);
-        this.setRoom(room);
+    //    this.setRoom(room);
     }
 
     public String getId() {
