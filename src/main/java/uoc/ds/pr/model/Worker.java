@@ -4,11 +4,13 @@ import edu.uoc.ds.adt.sequential.LinkedList;
 import edu.uoc.ds.adt.sequential.List;
 import edu.uoc.ds.traversal.Iterator;
 import uoc.ds.pr.CTTCompaniesJobs;
+import uoc.ds.pr.CTTCompaniesJobsPR2;
 
 import java.time.LocalDate;
+import java.util.*;
 
-public class Worker {
-
+public class Worker implements Comparable<Worker> {
+    public static final Comparator<Worker> CMP_V = (w1, w2) -> Integer.compare(w1.getLevel().getValue(), w2.getLevel().getValue());
     private String id;
     private String name;
     private String surname;
@@ -17,7 +19,8 @@ public class Worker {
 
     private List<JobOffer> jobOffers;
     private int workingDays;
-
+    private CTTCompaniesJobsPR2.Level level;
+    private int workedHours;
 
     public Worker(String id, String name, String surname,
                   LocalDate dateOfBirth, CTTCompaniesJobs.Qualification qualification) {
@@ -28,6 +31,7 @@ public class Worker {
         this.setQualification(qualification);
         this.jobOffers = new LinkedList<>();
         this.workingDays = 0;
+        this.workedHours = 0;
     }
 
 
@@ -81,8 +85,25 @@ public class Worker {
 
 
     public void addJobOffer(JobOffer jobOffer) {
-        this.workingDays+=jobOffer.getWorkingDays();
+        this.workingDays += jobOffer.getWorkingDays();
+        this.workedHours += (jobOffer.getWorkingDays() * CTTCompaniesJobsPR2.HOURS_PER_DAY);
         this.jobOffers.insertEnd(jobOffer);
+    }
+
+    public CTTCompaniesJobsPR2.Level getLevel() {
+
+        if (workedHours < 10)
+            this.level = CTTCompaniesJobsPR2.Level.BEFINNER;
+        if (workedHours >= 10 && workedHours < 200)
+            this.level = CTTCompaniesJobsPR2.Level.INTERN;
+        if (workedHours >= 200 && workedHours < 500)
+            this.level = CTTCompaniesJobsPR2.Level.JUNIOR;
+        if (workedHours >= 500 && workedHours < 1000)
+            this.level = CTTCompaniesJobsPR2.Level.SENIOR;
+        if (workedHours >= 1000)
+            this.level = CTTCompaniesJobsPR2.Level.EXPERT;
+
+        return this.level;
     }
 
     public Iterator<JobOffer> getJobOffers() {
@@ -100,12 +121,11 @@ public class Worker {
     }
 
 
-
-    public boolean isInJobOffer(Iterator<Enrollment> it){
+    public boolean isInJobOffer(Iterator<Enrollment> it) {
         boolean found = false;
 
         Enrollment enrollment = null;
-        while (!found && it.hasNext()){
+        while (!found && it.hasNext()) {
             enrollment = it.next();
             found = enrollment.getWorker().getId().equals(this.id);
         }
@@ -116,4 +136,8 @@ public class Worker {
         return this.workingDays;
     }
 
+    @Override
+    public int compareTo(Worker o) {
+        return Integer.compare(this.getLevel().getValue(), o.getLevel().getValue());
+    }
 }
