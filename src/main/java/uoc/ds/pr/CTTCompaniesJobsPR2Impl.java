@@ -1,13 +1,47 @@
 package uoc.ds.pr;
 
+import edu.uoc.ds.adt.*;
+import edu.uoc.ds.adt.nonlinear.*;
+import edu.uoc.ds.adt.sequential.*;
 import edu.uoc.ds.traversal.*;
 import uoc.ds.pr.exceptions.*;
 import uoc.ds.pr.model.*;
+import uoc.ds.pr.util.*;
 
 import java.time.*;
 
 public class CTTCompaniesJobsPR2Impl implements CTTCompaniesJobsPR2 {
+    private DictionaryAVLImpl<String, Worker> workers;
+    private HashTable<String, Company> companies;
+    private Queue<Request> requests;
+    private DictionaryAVLImpl<String, JobOffer> jobOffers;
 
+    private HashTable<String, Employee> employees;
+
+    private HashTable<String, Room> rooms;
+
+    private DictionaryAVLImpl<String, Equipment> equipment;
+
+    private DSArray<Role> roles;
+
+    private OrderedVector<JobOffer> bestJobOffers;
+
+    private OrderedVector<Room> bestRooms;
+    private int numRejectedRequests;
+
+    private OrderedVector<JobOffer> bestJobOffer;
+    private Worker mostActiveWorker;
+
+
+    public CTTCompaniesJobsPR2Impl() {
+        workers = new DSArray<>(MAX_NUM_WORKERS);
+        companies = new DSArray<>(MAX_NUM_COMPANIES);
+        requests = new QueueLinkedList<>();
+        jobOffers = new DSArray<>(MAX_NUM_JOBOFFERS);
+        bestJobOffer = new OrderedVector<>(MAX_NUM_JOBOFFERS, JobOffer.CMP_V);
+        numRejectedRequests = 0;
+        mostActiveWorker = null;
+    }
 
 
     @Override

@@ -12,7 +12,7 @@ import java.time.*;
 
 public class Employee {
 
-    private String DNI;
+    private String employeeId;
 
     private String name;
 
@@ -22,76 +22,66 @@ public class Employee {
 
     private Role role;
 
-    private List<Room> rooms;
+    private List<Room> assignedRooms;
 
     private Graph<Employee, Employee> socialNetwork;
 
     public Employee(String dni, String name, String surname,
                     LocalDate dateOfBirth, Role role) {
-        this.setDNI(dni);
-        this.setName(name);
-        this.setSurname(surname);
-        this.setDateOfBirth(dateOfBirth);
-        this.setRole(role);
-        this.rooms = new LinkedList<>();
+        this.employeeId = dni;
+        this.name = name;
+        this.surname = surname;
+        this.dateOfBirth = dateOfBirth;
+        this.role = role;
+        this.assignedRooms = new LinkedList<>();
         this.socialNetwork = new DirectedGraphImpl<>();
     }
 
-
     public void update(String name, String surname,
                        LocalDate dateOfBirth, Role role) {
-        this.setName(name);
-        this.setSurname(surname);
-        this.setDateOfBirth(dateOfBirth);
-        this.setRole(role);
+        this.name = name;
+        this.surname = surname;
+        this.dateOfBirth = dateOfBirth;
+        this.role = role;
     }
 
     public String getEmployeeId() {
-        return DNI;
+        return employeeId;
     }
 
-    public void setDNI(String DNI) {
-        this.DNI = DNI;
-    }
-
-    public String getName() {
+       public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
     }
 
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public Iterator<Room> getRooms() {
-        return this.rooms.values();
+        return this.assignedRooms.values();
     }
 
-    public void addRoom(Room room) {
-        this.rooms.insertEnd(room);
+    public void assignRoom(Room room) {
+        if (!isAssignedToRoom(room)) {
+            this.assignedRooms.insertEnd(room);
+        }
+    }
+
+    public boolean isAssignedToRoom(Room room) {
+        Iterator<Room> it = this.assignedRooms.values();
+        while (it.hasNext()) {
+            Room assignedRoom = it.next();
+            if (assignedRoom.equals(room)) return true;
+        }
+        return false;
     }
 
     public void removeRoom(Room r1) {
@@ -99,7 +89,7 @@ public class Employee {
             final Position<Room> roomPosition = (Position<Room>) it.next();
             Room r2 = roomPosition.getElem();
             if (r2.getRoomId().equals(r1.getRoomId())) {
-                rooms.delete(roomPosition);
+                assignedRooms.delete(roomPosition);
             }
         }
     }

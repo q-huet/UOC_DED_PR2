@@ -1,6 +1,7 @@
 package uoc.ds.pr.model;
 
 import uoc.ds.pr.CTTCompaniesJobs;
+import uoc.ds.pr.CTTCompaniesJobs.Response;
 
 import java.util.*;
 
@@ -11,9 +12,9 @@ public class Enrollment implements Comparable<Enrollment> {
     private Worker worker;
     private JobOffer jobOffer;
 
-    private CTTCompaniesJobs.Response response;
+    private Response response;
 
-    public Enrollment(JobOffer jobOffer, Worker worker, CTTCompaniesJobs.Response response) {
+    public Enrollment(JobOffer jobOffer, Worker worker, Response response) {
         this.jobOffer = jobOffer;
         this.worker = worker;
         this.response = response;

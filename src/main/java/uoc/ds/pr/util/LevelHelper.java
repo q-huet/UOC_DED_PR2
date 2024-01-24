@@ -1,19 +1,19 @@
 package uoc.ds.pr.util;
 
-import uoc.ds.pr.*;
+import uoc.ds.pr.CTTCompaniesJobsPR2.Level;
 
 public class LevelHelper {
-    public static CTTCompaniesJobsPR2.Level getLevel(Integer level) {
+    public static Level getLevel(Integer level) {
         if (level < 10)
-            return CTTCompaniesJobsPR2.Level.BEFINNER;
+            return Level.BEFINNER;
         if (level < 200)
-            return CTTCompaniesJobsPR2.Level.INTERN;
+            return Level.INTERN;
         if (level < 500)
-            return CTTCompaniesJobsPR2.Level.JUNIOR;
+            return Level.JUNIOR;
         if (level < 1000)
-            return CTTCompaniesJobsPR2.Level.SENIOR;
+            return Level.SENIOR;
         if (level >= 1000)
-            return CTTCompaniesJobsPR2.Level.EXPERT;
+            return Level.EXPERT;
         return null;
     }
 

@@ -2,6 +2,7 @@ package uoc.ds.pr;
 
 import java.time.LocalDate;
 
+import edu.uoc.ds.adt.nonlinear.*;
 import edu.uoc.ds.adt.sequential.Queue;
 import edu.uoc.ds.traversal.Iterator;
 import uoc.ds.pr.exceptions.*;
@@ -13,23 +14,23 @@ import uoc.ds.pr.util.QueueLinkedList;
 
 public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
 
-    private DSArray<Worker> workers;
-    private DSArray<Company> companies;
+    private final DictionaryAVLImpl<String, Worker> workers;
+    private final HashTable<String, Company> companies;
 
-    private Queue<Request> requests;
+    private final Queue<Request> requests;
 
-    private DSArray<JobOffer> jobOffers;
+    private final DictionaryAVLImpl<String, JobOffer> jobOffers;
     private int numRejectedRequests;
 
-    private OrderedVector<JobOffer> bestJobOffer;
+    private final OrderedVector<JobOffer> bestJobOffer;
     private Worker mostActiveWorker;
 
 
     public CTTCompaniesJobsImpl() {
-        workers = new DSArray<>(MAX_NUM_WORKERS);
-        companies = new DSArray<>(MAX_NUM_COMPANIES);
+        workers = new DictionaryAVLImpl<>();
+        companies = new HashTable<>(MAX_NUM_COMPANIES);
         requests = new QueueLinkedList<>();
-        jobOffers = new DSArray<>(MAX_NUM_JOBOFFERS);
+        jobOffers = new DictionaryAVLImpl<>();
         bestJobOffer = new OrderedVector<>(MAX_NUM_JOBOFFERS, JobOffer.CMP_V);
         numRejectedRequests = 0;
         mostActiveWorker = null;
