@@ -7,7 +7,6 @@ import edu.uoc.ds.adt.sequential.Queue;
 import edu.uoc.ds.traversal.Iterator;
 import uoc.ds.pr.exceptions.*;
 import uoc.ds.pr.model.*;
-import uoc.ds.pr.util.DSArray;
 import uoc.ds.pr.util.OrderedVector;
 import uoc.ds.pr.util.QueueLinkedList;
 
@@ -99,7 +98,7 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
     }
 
     public Response signUpJobOffer(String workerId, String jobOfferId) throws JobOfferNotFoundException, WorkerNotFoundException, WorkerAlreadyEnrolledException {
-        Response response = Response.REJECTED;
+        Response response;
         Worker worker = getWorker(workerId);
         if (worker == null) {
             throw new WorkerNotFoundException();

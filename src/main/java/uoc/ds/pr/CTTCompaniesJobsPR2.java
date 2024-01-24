@@ -73,7 +73,7 @@ public interface CTTCompaniesJobsPR2 extends CTTCompaniesJobs {
 
     public Iterator<Employee> recommendations(String followerId) throws EmployeeNotFoundException, NoFollowedException;
 
-    public Iterator<Employee> getUnfollowedColleagues(String employeeId) throws EmployeeNotFoundException, NOEmployeeException;
+    public Iterator<Employee> getUnfollowedColleagues(String employeeId) throws EmployeeNotFoundException, NOEmployeeException, RoomNotFoundException;
 
 
     /***********************************************************************************/

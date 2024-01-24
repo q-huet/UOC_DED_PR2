@@ -4,9 +4,7 @@ package uoc.ds.pr;
 
 import edu.uoc.ds.adt.nonlinear.*;
 import edu.uoc.ds.adt.nonlinear.graphs.*;
-import edu.uoc.ds.adt.sequential.*;
 import edu.uoc.ds.adt.sequential.LinkedList;
-import edu.uoc.ds.traversal.*;
 import edu.uoc.ds.traversal.Iterator;
 import uoc.ds.pr.exceptions.*;
 import uoc.ds.pr.model.*;
@@ -25,7 +23,7 @@ public class CTTCompaniesJobsPR2Impl extends CTTCompaniesJobsImpl implements CTT
 
     private final DSArray<Role> roles;
 
-    private final DirectedGraph<Employee, String> graph;
+    private final DirectedGraph<Employee, String> socialNetwork;
 
     private final OrderedVector<Room> best5rooms;
 
@@ -35,7 +33,7 @@ public class CTTCompaniesJobsPR2Impl extends CTTCompaniesJobsImpl implements CTT
         equipments = new DictionaryAVLImpl<>();
         roles = new DSArray<>(MAX_NUM_ROLES);
         best5rooms = new OrderedVector<>(MAX_BEST5_EQUIPPEMENT, Room.CMP_R);
-        graph = new DirectedGraphImpl<>();
+        socialNetwork = new DirectedGraphImpl<>();
     }
 
     @Override
@@ -135,11 +133,10 @@ public class CTTCompaniesJobsPR2Impl extends CTTCompaniesJobsImpl implements CTT
         if (currentRoom != null) {
             if (currentRoom.getRoomId().equals(roomId)) throw new EquipmentAlreadyAssignedException();
             currentRoom.removeEquipment(equipment);
+            updateBestRoom(currentRoom);
         }
         equipment.assignedToRoom(newRoom);
         updateBestRoom(newRoom);
-        if (currentRoom != null) updateBestRoom(currentRoom);
-
         return currentRoom == null ? AssignEquipmentResponse.ASSIGNED : AssignEquipmentResponse.REASSIGNED;
         /*
         NO CONSIGO QUE  FUNCIONE LA ACTUALIZACION DEl VECTOR ORDENADO best5rooms
@@ -207,6 +204,7 @@ public class CTTCompaniesJobsPR2Impl extends CTTCompaniesJobsImpl implements CTT
         }
 
         return bestEquippedRooms.values();
+
     }
 
 
@@ -221,6 +219,7 @@ public class CTTCompaniesJobsPR2Impl extends CTTCompaniesJobsImpl implements CTT
         }
     */
     private void updateBestRoom(Room room) {
+        // best5rooms.delete(room);
         best5rooms.update(room);
     }
 
@@ -234,35 +233,122 @@ public class CTTCompaniesJobsPR2Impl extends CTTCompaniesJobsImpl implements CTT
 
         if (followed == null) throw new FollowedException();
 
-        Vertex<Employee> followerVertex = graph.getVertex(follower);
-        if (followerVertex == null) followerVertex = graph.newVertex(follower);
+        Vertex<Employee> followerVertex = socialNetwork.getVertex(follower);
+        if (followerVertex == null) followerVertex = socialNetwork.newVertex(follower);
 
-        Vertex<Employee> followedVertex = graph.getVertex(followed);
-        if (followedVertex == null) followedVertex = graph.newVertex(followed);
+        Vertex<Employee> followedVertex = socialNetwork.getVertex(followed);
+        if (followedVertex == null) followedVertex = socialNetwork.newVertex(followed);
 
-        if (graph.getEdge(followerVertex, followedVertex) != null) throw new FollowedException();
+        if (socialNetwork.getEdge(followerVertex, followedVertex) != null) throw new FollowedException();
 
-        graph.newEdge(followerVertex, followedVertex);
+        socialNetwork.newEdge(followerVertex, followedVertex);
     }
 
     @Override
     public Iterator<Employee> getFollowers(String followedId) throws EmployeeNotFoundException, NoFollowersException, FollowerNotFound {
-        return null;
+        Employee followed = getEmployee(followedId);
+        if (followed == null) throw new EmployeeNotFoundException();
+
+        Vertex<Employee> followedVertex = socialNetwork.getVertex(followed);
+        if (followedVertex == null) throw new NoFollowersException();
+
+        LinkedList<Employee> followers = new LinkedList<>();
+        Iterator<Edge<String, Employee>> edges = socialNetwork.edges();
+        while (edges.hasNext()) {
+            DirectedEdge<String, Employee> edge = (DirectedEdge<String, Employee>) edges.next();
+            if (edge.getVertexDst().equals(followedVertex)) followers.insertEnd(edge.getVertexSrc().getValue());
+        }
+
+        if (followers.isEmpty()) throw new NoFollowersException();
+
+        return followers.values();
     }
 
     @Override
     public Iterator<Employee> getFollowings(String followerId) throws EmployeeNotFoundException, NoFollowedException {
-        return null;
+        Employee follower = getEmployee(followerId);
+        if (follower == null) throw new EmployeeNotFoundException();
+
+        Vertex<Employee> followerVertex = socialNetwork.getVertex(follower);
+        if (followerVertex == null) throw new NoFollowedException();
+
+        LinkedList<Employee> followings = new LinkedList<>();
+        Iterator<Edge<String, Employee>> edges = socialNetwork.edgesWithSource(followerVertex);
+        while (edges.hasNext()) {
+            DirectedEdge<String, Employee> edge = (DirectedEdge<String, Employee>) edges.next();
+            followings.insertEnd(edge.getVertexDst().getValue());
+        }
+
+        if (followings.isEmpty()) throw new NoFollowedException();
+
+        return followings.values();
     }
 
     @Override
     public Iterator<Employee> recommendations(String followerId) throws EmployeeNotFoundException, NoFollowedException {
-        return null;
+        Employee follower = getEmployee(followerId);
+        if (follower == null) throw new EmployeeNotFoundException();
+
+        Vertex<Employee> followerVertex = socialNetwork.getVertex(follower);
+        if (followerVertex == null) throw new NoFollowedException();
+
+        LinkedList<Employee> recommendations = new LinkedList<>();
+        Iterator<Edge<String, Employee>> edges = socialNetwork.edgesWithSource(followerVertex);
+
+        while (edges.hasNext()) {
+            DirectedEdge<String, Employee> edge = (DirectedEdge<String, Employee>) edges.next();
+            Employee followed = edge.getVertexDst().getValue();
+
+            Iterator<Edge<String, Employee>> followedEdges = socialNetwork.edgesWithSource(socialNetwork.getVertex(followed));
+            while (followedEdges.hasNext()) {
+                DirectedEdge<String, Employee> followedEdge = (DirectedEdge<String, Employee>) followedEdges.next();
+                Employee recommended = followedEdge.getVertexDst().getValue();
+
+                if (!recommended.equals(follower) && socialNetwork.getEdge(followerVertex, socialNetwork.getVertex(recommended)) == null) {
+                    recommendations.insertEnd(recommended);
+                }
+            }
+        }
+
+        if (recommendations.isEmpty()) throw new NoFollowedException();
+
+        return recommendations.values();
     }
 
     @Override
-    public Iterator<Employee> getUnfollowedColleagues(String employeeId) throws EmployeeNotFoundException, NOEmployeeException {
-        return null;
+    public Iterator<Employee> getUnfollowedColleagues(String employeeId) throws EmployeeNotFoundException, NOEmployeeException, RoomNotFoundException {
+        Employee employee = getEmployee(employeeId);
+        if (employee == null) throw new EmployeeNotFoundException();
+
+        LinkedList<Employee> unfollowedColleagues = new LinkedList<>();
+        Iterator<Room> assignedRoomsIterator = employee.getRooms();
+
+        while (assignedRoomsIterator.hasNext()) {
+            Room room = assignedRoomsIterator.next();
+            Iterator<Employee> roomEmployeesIterator = getEmployeesByRoom(room.getRoomId());
+
+            while (roomEmployeesIterator.hasNext()) {
+                Employee colleague = roomEmployeesIterator.next();
+
+                if (!colleague.getEmployeeId().equals(employeeId) && !isAlreadyInList(unfollowedColleagues, colleague)) {
+                    Vertex<Employee> employeeVertex = socialNetwork.getVertex(employee);
+                    Vertex<Employee> colleagueVertex = socialNetwork.getVertex(colleague);
+                    if (socialNetwork.getEdge(employeeVertex, colleagueVertex) == null) {
+                        unfollowedColleagues.insertEnd(colleague);
+                    }
+                }
+            }
+        }
+
+        if (unfollowedColleagues.isEmpty()) throw new NOEmployeeException();
+
+        return unfollowedColleagues.values();
+    }
+
+    private boolean isAlreadyInList(LinkedList<Employee> list, Employee employee) {
+        Iterator<Employee> it = list.values();
+        while (it.hasNext()) if (it.next().getEmployeeId().equals(employee.getEmployeeId())) return true;
+        return false;
     }
 
     @Override
@@ -297,12 +383,38 @@ public class CTTCompaniesJobsPR2Impl extends CTTCompaniesJobsImpl implements CTT
 
     @Override
     public int numFollowers(String employeeId) {
-        return 0;
+        Employee employee = getEmployee(employeeId);
+        if (employee == null) return 0;
+
+        Vertex<Employee> employeeVertex = socialNetwork.getVertex(employee);
+        Iterator<Edge<String, Employee>> edges = socialNetwork.edgedWithDestination(employeeVertex);
+
+        int count = 0;
+        while (edges.hasNext()) {
+            edges.next();
+            count++;
+        }
+
+        return count;
+
     }
 
     @Override
     public int numFollowings(String employeeId) {
-        return 0;
+        Employee employee = getEmployee(employeeId);
+        if (employee != null) {
+            Vertex<Employee> employeeVertex = socialNetwork.getVertex(employee);
+            Iterator<Edge<String, Employee>> edges = socialNetwork.edgesWithSource(employeeVertex);
+
+            int count = 0;
+            while (edges.hasNext()) {
+                edges.next();
+                count++;
+            }
+
+            return count;
+
+        } else return 0;
     }
 
     @Override
