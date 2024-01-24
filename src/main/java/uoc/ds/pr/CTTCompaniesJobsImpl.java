@@ -49,8 +49,6 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
         }
     }
 
-
-
     @Override
     public void addCompany(String id, String name, String description) {
         Company company = getCompany(id);
@@ -99,7 +97,6 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
         }
         return request;
     }
-
 
     public Response signUpJobOffer(String workerId, String jobOfferId) throws JobOfferNotFoundException, WorkerNotFoundException, WorkerAlreadyEnrolledException {
         Response response = Response.REJECTED;
