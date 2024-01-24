@@ -50,24 +50,27 @@ public class CTTCCompaniesJobsPR2Test extends CTTCompaniesJobsPR1Test {
         Employee employee = cttCompaniesJobs.getEmployee("334545445A");
         Assert.assertEquals("XXXX", employee.getSurname());
 
+        Assert.assertEquals(1, cttCompaniesJobs.numEmployeesByRole("R1"));
+        Assert.assertEquals(1, cttCompaniesJobs.numEmployeesByRole("R2"));
+
         cttCompaniesJobs.addEmployee("334545445A", "Joan", "Salvat", DateUtils.createLocalDate("03-01-2001"), "R2");
         Assert.assertEquals(2, cttCompaniesJobs.numEmployees());
         Assert.assertEquals("Salvat", employee.getSurname());
 
         Assert.assertEquals(1, cttCompaniesJobs.numEmployeesByRole("R1"));
-        Assert.assertEquals(2, cttCompaniesJobs.numEmployeesByRole("R2"));
+        Assert.assertEquals(1, cttCompaniesJobs.numEmployeesByRole("R2"));
 
         cttCompaniesJobs.addEmployee("334545445A", "Joan", "Salvat", DateUtils.createLocalDate("03-01-2001"), "R1");
         Assert.assertEquals(2, cttCompaniesJobs.numEmployees());
         Assert.assertEquals(2, cttCompaniesJobs.numEmployeesByRole("R1"));
-        Assert.assertEquals(1, cttCompaniesJobs.numEmployeesByRole("R2"));
+        Assert.assertEquals(0, cttCompaniesJobs.numEmployeesByRole("R2"));
         Assert.assertEquals("Salvat", employee.getSurname());
 
         cttCompaniesJobs.addEmployee("12122145A", "Silvia", "Pérez", DateUtils.createLocalDate("13-07-2003"), "R2");
         Assert.assertEquals(3, cttCompaniesJobs.numEmployees());
 
         Assert.assertEquals(2, cttCompaniesJobs.numEmployeesByRole("R1"));
-        Assert.assertEquals(2, cttCompaniesJobs.numEmployeesByRole("R2"));
+        Assert.assertEquals(1, cttCompaniesJobs.numEmployeesByRole("R2"));
 
         cttCompaniesJobs.addEmployee("67122145A", "Pere", "Sánchez", DateUtils.createLocalDate("13-10-1999"), "R1");
         cttCompaniesJobs.addEmployee("89333214B", "Josep", "Martí", DateUtils.createLocalDate("13-10-1999"), "R1");
@@ -77,10 +80,8 @@ public class CTTCCompaniesJobsPR2Test extends CTTCompaniesJobsPR1Test {
         cttCompaniesJobs.addEmployee("76239045G", "Linda", "Lzópe", DateUtils.createLocalDate("14-08-1072"), "R1");
         cttCompaniesJobs.addEmployee("439452145T", "Mario", "Fernández", DateUtils.createLocalDate("11-11-1969"), "R1");
         Assert.assertEquals(10, cttCompaniesJobs.numEmployees());
-
-
-
-
+        Assert.assertEquals(9, cttCompaniesJobs.numEmployeesByRole("R1"));
+        Assert.assertEquals(1, cttCompaniesJobs.numEmployeesByRole("R2"));
     }
 
 
@@ -194,17 +195,10 @@ public class CTTCCompaniesJobsPR2Test extends CTTCompaniesJobsPR1Test {
         Iterator<Employee> it = cttCompaniesJobs.getEmployeesByRole("R2");
         it.hasNext();
         Employee e1 = it.next();
-        Assert.assertEquals("334545445A", e1.getEmployeeId());
-        Assert.assertEquals("Joan", e1.getName());
-
-        it.hasNext();
-        Employee e2 = it.next();
-        Assert.assertEquals("12122145A", e2.getEmployeeId());
-        Assert.assertEquals("Silvia", e2.getName());
+        Assert.assertEquals("12122145A", e1.getEmployeeId());
+        Assert.assertEquals("Silvia", e1.getName());
 
         Assert.assertFalse(it.hasNext());
-
-
     }
 
     @Test
@@ -316,7 +310,7 @@ public class CTTCCompaniesJobsPR2Test extends CTTCompaniesJobsPR1Test {
         Assert.assertEquals("jobOfferIdB1", request34.getJobOffer().getJobOfferId());
 
 
-                Assert.assertThrows(NoWorkerException.class, () ->
+        Assert.assertThrows(NoWorkerException.class, () ->
                 cttCompaniesJobs.getWorkersByJobOffer("jobOfferIdB1"));
 
         Assert.assertThrows(JobOfferNotFoundException.class, () ->

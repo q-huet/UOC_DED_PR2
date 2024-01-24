@@ -28,25 +28,22 @@ public class Equipment {
         return id;
     }
 
-     public String getName() {
+    public String getName() {
         return name;
     }
 
-      public String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-     public Room getRoom() {
+    public Room getRoom() {
         return assignedToRoom;
     }
 
-    public void setRoom(Room room) {
-        if (this.assignedToRoom != null) {
-            this.assignedToRoom.removeEquipment(this);
-        }
+    public void assignedToRoom(Room room) {
+        if (this.assignedToRoom != null) this.assignedToRoom.removeEquipment(this);
         this.assignedToRoom = room;
-        if (room != null) {
-            room.addEquipment(this);
-        }
+        if (room != null) room.addEquipment(this);
+
     }
 }

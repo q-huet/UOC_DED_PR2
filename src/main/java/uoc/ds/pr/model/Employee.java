@@ -20,25 +20,22 @@ public class Employee {
 
     private LocalDate dateOfBirth;
 
-    private Role role;
+    private String role;
 
     private List<Room> assignedRooms;
 
-    private Graph<Employee, Employee> socialNetwork;
-
     public Employee(String dni, String name, String surname,
-                    LocalDate dateOfBirth, Role role) {
+                    LocalDate dateOfBirth, String role) {
         this.employeeId = dni;
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.role = role;
         this.assignedRooms = new LinkedList<>();
-        this.socialNetwork = new DirectedGraphImpl<>();
     }
 
     public void update(String name, String surname,
-                       LocalDate dateOfBirth, Role role) {
+                       LocalDate dateOfBirth, String role) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
@@ -49,7 +46,7 @@ public class Employee {
         return employeeId;
     }
 
-       public String getName() {
+    public String getName() {
         return name;
     }
 
@@ -61,12 +58,16 @@ public class Employee {
         return dateOfBirth;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
     public Iterator<Room> getRooms() {
         return this.assignedRooms.values();
+    }
+
+    public int numAssignedRooms() {
+        return assignedRooms.size();
     }
 
     public void assignRoom(Room room) {

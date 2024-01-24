@@ -30,17 +30,17 @@ public class CTTCCompaniesJobsPR2PlusTest extends CTTCCompaniesJobsPR2Test {
     public void addFollowerTest() throws DSException {
         addEmployeeTest();
 
-        cttCompaniesJobs.addFollower("3811123A", "334545445A");
-        cttCompaniesJobs.addFollower("3811123A", "12122145A");
-        cttCompaniesJobs.addFollower("3811123A", "439452145T");
-        cttCompaniesJobs.addFollower("3811123A", "12365232F");
-
-        cttCompaniesJobs.addFollower("334545445A", "12122145A");
-        cttCompaniesJobs.addFollower("334545445A", "439452145T");
+        cttCompaniesJobs.addFollower("334545445A","3811123A");
+        cttCompaniesJobs.addFollower("12122145A","3811123A");
+        cttCompaniesJobs.addFollower("439452145T", "3811123A");
+        cttCompaniesJobs.addFollower("12365232F","3811123A");
 
         cttCompaniesJobs.addFollower("12122145A", "334545445A");
-        cttCompaniesJobs.addFollower("12122145A", "439452145T");
-        cttCompaniesJobs.addFollower("12122145A", "12365232F");
+        cttCompaniesJobs.addFollower("439452145T","334545445A");
+
+        cttCompaniesJobs.addFollower("334545445A","12122145A");
+        cttCompaniesJobs.addFollower("439452145T", "12122145A");
+        cttCompaniesJobs.addFollower("12365232F", "12122145A");
 
 
         Assert.assertEquals(4, cttCompaniesJobs.numFollowers("3811123A"));
@@ -148,42 +148,48 @@ public class CTTCCompaniesJobsPR2PlusTest extends CTTCCompaniesJobsPR2Test {
     @Test
     public void getUnfollowedColleaguesTest() throws DSException {
         addAssignEmployeeTest();
-
-        cttCompaniesJobs.addFollower("3811123A", "334545445A");
-        cttCompaniesJobs.addFollower("3811123A", "12122145A");
-        cttCompaniesJobs.addFollower("3811123A", "439452145T");
-        cttCompaniesJobs.addFollower("3811123A", "12365232F");
+        cttCompaniesJobs.addFollower("334545445A","3811123A");
+        cttCompaniesJobs.addFollower("12122145A","3811123A");
         cttCompaniesJobs.addFollower("439452145T", "3811123A");
-
-
-        cttCompaniesJobs.addFollower("334545445A", "12122145A");
-        cttCompaniesJobs.addFollower("334545445A", "439452145T");
+        cttCompaniesJobs.addFollower("12365232F","3811123A");
 
         cttCompaniesJobs.addFollower("12122145A", "334545445A");
-        cttCompaniesJobs.addFollower("12122145A", "439452145T");
-        cttCompaniesJobs.addFollower("12122145A", "12365232F");
+        cttCompaniesJobs.addFollower("439452145T","334545445A");
+
+        cttCompaniesJobs.addFollower("334545445A","12122145A");
+        cttCompaniesJobs.addFollower("439452145T", "12122145A");
+        cttCompaniesJobs.addFollower("12365232F", "12122145A");
+
+        cttCompaniesJobs.addFollower("3811123A","439452145T");
+
 
         Assert.assertThrows(EmployeeNotFoundException.class, () ->
                 cttCompaniesJobs.getUnfollowedColleagues("Pepito"));
 
-        Iterator<Employee> it = cttCompaniesJobs.getUnfollowedColleagues("3811123A");
+        Iterator<Employee> it1 = cttCompaniesJobs.getFollowings("3811123A");
+        Assert.assertEquals("439452145T", it1.next().getEmployeeId());
+        Assert.assertFalse(it1.hasNext());
 
+
+        Iterator<Employee> it = cttCompaniesJobs.getUnfollowedColleagues("3811123A");
         Employee employee1 = it.next();
-        Assert.assertEquals("67122145A", employee1.getEmployeeId());
+        Assert.assertEquals("12122145A", employee1.getEmployeeId());
 
         Employee employee2 = it.next();
-        Assert.assertEquals("89333214B", employee2.getEmployeeId());
+        Assert.assertEquals("67122145A", employee2.getEmployeeId());
 
 
         Employee employee3 = it.next();
-        Assert.assertEquals("76239045G", employee3.getEmployeeId());
+        Assert.assertEquals("89333214B", employee3.getEmployeeId());
 
         Employee employee4= it.next();
-        Assert.assertEquals("67322245Z", employee4.getEmployeeId());
+        Assert.assertEquals("76239045G", employee4.getEmployeeId());
 
         Employee employee5= it.next();
-        Assert.assertEquals("12365232F", employee5.getEmployeeId());
+        Assert.assertEquals("67322245Z", employee5.getEmployeeId());
 
+        Employee employee6= it.next();
+        Assert.assertEquals("12365232F", employee6.getEmployeeId());
         Assert.assertFalse(it.hasNext());
 
     }

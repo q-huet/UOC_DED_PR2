@@ -19,7 +19,7 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
 
     private final Queue<Request> requests;
 
-    private final DictionaryAVLImpl<String, JobOffer> jobOffers;
+    protected final DictionaryAVLImpl<String, JobOffer> jobOffers;
     private int numRejectedRequests;
 
     private final OrderedVector<JobOffer> bestJobOffer;
